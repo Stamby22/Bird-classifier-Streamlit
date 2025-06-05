@@ -1,3 +1,4 @@
 streamlit
 keras
+numpy
 pillow==11.0
