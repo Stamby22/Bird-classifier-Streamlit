@@ -57,19 +57,19 @@ def get_probabilities(prob_list, trashold):
 def main():
     st.title("Bird Image Classification")
 
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("Vyber obrázek", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded Image", use_container_width=True)
 
         spec_id, predictions = classify_image(image)
 
-        st.subheader("Name:")
+        st.subheader("Název druhu:")
 
         st.write(str(bird_species[int(spec_id)]).replace('_', ' '))
 
-        st.subheader("Classification Results:")
+        st.subheader("Přesnost určení:")
         for i, text in enumerate(predictions):
             st.write(f"{i + 1}. {text}")
 
