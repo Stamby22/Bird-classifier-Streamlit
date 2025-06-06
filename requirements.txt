@@ -1,5 +1,6 @@
 streamlit
 streamlit_cropper
 keras
+tensorflow
 numpy
 pillow==11.0
