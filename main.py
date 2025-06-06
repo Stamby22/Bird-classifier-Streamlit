@@ -1,9 +1,8 @@
 import streamlit as st
+from streamlit_cropper import st_cropper
 from PIL import Image
 from keras.models import load_model
 from keras.preprocessing import image as kimage
-
-#from keras.ops import expand_dims
 from numpy import argmax, expand_dims
 import os
 import json
@@ -11,21 +10,19 @@ import json
 
 # Loading the dictionary from the JSON file
 current_working_directory = os.getcwd()
-model_directory = os.path.join(current_working_directory, 'Models')
+model_directory = os.path.join(current_working_directory,"Bird-classifier-Streamlit", 'Models')
 # load trained model classes
 bird_classes_file_name = os.path.join(model_directory, "bird_classes.json")
 with open(bird_classes_file_name, 'r') as json_file:
     bird_classes = json.load(json_file)
 bird_species = {int(k): v for k, v in bird_classes.items()}
-
 # load trained model
 model_file_name = os.path.join(model_directory, "Bird_EffiB3_DS7_FT.keras")
 MODEL = load_model(model_file_name)
+IMG_SIZE = 300
 
 def classify_image(image):
-    IMG_SIZE = 300
     image = image.convert("RGB")
-    image = image.resize((IMG_SIZE, IMG_SIZE))
 
     # Preprocess the image
     img_array = kimage.img_to_array(image)
@@ -53,21 +50,35 @@ def get_probabilities(prob_list, trashold):
     sorted_list = [str(i)+'% '+ prob_dict[i] for i in myKeys]
     return sorted_list
 
-def main():
-    st.title("Bird Image Classification")
+# Upload an image and set some options for demo purposes
+st.header("Určování druhů ptáků ČR")
+img_file = st.sidebar.file_uploader(label='Vyber soubor', type=['png', 'jpg'])
+realtime_update = st.sidebar.checkbox(label="Real Time překreslení", value=True)
+box_color = st.sidebar.color_picker(label="Barva rámečku", value='#0000FF')
 
-    uploaded_file = st.file_uploader("Vyber obrázek", type=["jpg", "jpeg", "png"])
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, use_container_width=True)
+if img_file:
+    st.write("Ohraničte objekt zájmu")
+    img = Image.open(img_file)
+    if not realtime_update:
+        st.write("Double click k uložení výřezu")
+    # Get a cropped image from the frontend
+    cropped_img = st_cropper(img, realtime_update=realtime_update, box_color=box_color,
+                                aspect_ratio=(1, 1))
+    
+    # Manipulate cropped image at will
+    cropped_img = cropped_img.resize((IMG_SIZE, IMG_SIZE))
+    st.write("Preview")
+    # _ = cropped_img.thumbnail((150,150))
+    st.image(cropped_img)
 
-        spec_id, predictions = classify_image(image)
+    # Získání souřadnic ohraničeného objektu
+    if cropped_img:
+        spec_id, predictions = classify_image(cropped_img)
 
         st.subheader("Název druhu:")
-
         st.write(str(bird_species[int(spec_id)]).replace('_', ' '))
-
+        
         st.subheader("Přesnost určení:")
         for i, text in enumerate(predictions):
             st.write(f"{i + 1}. {text}")
