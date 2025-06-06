@@ -83,5 +83,5 @@ if img_file:
         for i, text in enumerate(predictions):
             st.write(f"{i + 1}. {text}")
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
