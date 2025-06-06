@@ -10,7 +10,7 @@ import json
 
 # Loading the dictionary from the JSON file
 current_working_directory = os.getcwd()
-model_directory = os.path.join(current_working_directory,"Bird-classifier-Streamlit", 'Models')
+model_directory = os.path.join(current_working_directory, 'Models')
 # load trained model classes
 bird_classes_file_name = os.path.join(model_directory, "bird_classes.json")
 with open(bird_classes_file_name, 'r') as json_file:
