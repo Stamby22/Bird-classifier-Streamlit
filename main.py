@@ -53,7 +53,7 @@ def get_probabilities(prob_list, trashold):
 # Upload an image and set some options for demo purposes
 st.header("Určování druhů ptáků ČR")
 img_file = st.sidebar.file_uploader(label='Vyber soubor', type=['png', 'jpg'])
-realtime_update = st.sidebar.checkbox(label="Real Time překreslení", value=True)
+realtime_update = st.sidebar.checkbox(label="Real Time překreslení", value=False)
 box_color = st.sidebar.color_picker(label="Barva rámečku", value='#0000FF')
 
 
